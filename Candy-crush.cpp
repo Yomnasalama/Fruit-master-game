@@ -4,7 +4,7 @@ using namespace std;
 const int MIN = 3;
 const int N = 7;
 char arr[N][N];
-char Fruits[5] = { 'A', 'B', 'C', 'D','E'};
+char Fruits[5] = {'A', 'B', 'C', 'D','E'};
 vector<pair<int,int>> idxs;
 int score = 0;
 
@@ -70,15 +70,15 @@ void delete_duplicate(){
     int k;
     char temp;
     for(int i = 0; i < idxs.size(); i++){
-        if(idxs[i].first == idxs[i+1].first && idxs[i].second == idxs[i+1].second && i + 1 < idxs.size()){
+        if(i + 1 < idxs.size() && idxs[i].first == idxs[i+1].first && idxs[i].second == idxs[i+1].second ){
             k = 0;
             temp = arr[idxs[i].first][idxs[i].second];
-            while(arr[idxs[i].first + k][idxs[i].second] == temp){
+            while(idxs[i].first + k < N && arr[idxs[i].first + k][idxs[i].second] == temp){
                 arr[idxs[i].first + k][idxs[i].second] = '.';
                 k++;
             }
             k = 1;
-            while(arr[idxs[i].first][idxs[i].second + k] == temp){
+            while(idxs[i].second + k < N && arr[idxs[i].first][idxs[i].second + k] == temp){
                 arr[idxs[i].first][idxs[i].second + k] = '.';
                 k++;
             }
@@ -87,13 +87,13 @@ void delete_duplicate(){
             temp = arr[idxs[i].first][idxs[i].second];
             k = 0;
             if(arr[idxs[i].first][idxs[i].second] == arr[idxs[i].first + 1][idxs[i].second] && arr[idxs[i].first + 1][idxs[i].second] == arr[idxs[i].first + 2][idxs[i].second]){
-                while(arr[idxs[i].first + k][idxs[i].second] == temp){
+                while(idxs[i].first + k < N && arr[idxs[i].first + k][idxs[i].second] == temp){
                     arr[idxs[i].first + k][idxs[i].second] = '.';
                     k++;
                 }
             }
             else{
-                while(arr[idxs[i].first][idxs[i].second + k] == temp){
+                while(idxs[i].second + k < N && arr[idxs[i].first][idxs[i].second + k] == temp){
                     arr[idxs[i].first][idxs[i].second + k] = '.';
                     k++;
                 }
@@ -112,46 +112,96 @@ void swap(int i, int j, int i2, int j2){
 
 bool isduplicated (int i, int j, int i2, int j2){
     swap(i,j,i2,j2);
-    if(i + 2 < N && arr[i][j] == arr[i+1][j]  && arr[i+1][j] == arr[i+2][j]){
+    char temp;
+    int res = 0,r,l,u,d;
+    temp = arr[i][j];
+    for(int k = i; k < N ; k++){
+        if(arr[k][j] == temp)
+            res++;
+        else
+            break;
+        if(res == MIN)
             return true;
     }
-    else if(i2 + 2 < N && arr[i2][j2] == arr[i2+1][j2] && arr[i2+1][j2] == arr[i2+2][j2]){
+    d = res;
+    res = 0;
+    for(int k = j; k < N ; k++){
+        if(arr[i][k] == temp)
+            res++;
+        else
+            break;
+        if(res == MIN)
             return true;
     }
-    else if(i - 2 > -1 && arr[i][j] == arr[i-1][j] && arr[i-1][j]  == arr[i-2][j]){
+    r = res;
+    res = 0;
+    for(int k = i; k >= 0 ; k--){
+        if(arr[k][j] == temp)
+            res++;
+        else
+            break;
+        if(res == MIN)
             return true;
     }
-    else if(i2 - 2 > -1 && arr[i2][j2] == arr[i2-1][j2] && arr[i2-1][j2] == arr[i2-2][j2]){
+    u = res;
+    res = 0;
+    for(int k = j; k >= 0 ; k--){
+        if(arr[i][k] == temp)
+            res++;
+        else
+            break;
+        if(res == MIN)
             return true;
     }
-    else if(i + 1 < N && i - 1 > -1 && arr[i][j] == arr[i+1][j] && arr[i+1][j]== arr[i-1][j]){
+    l = res;
+    res = 0;
+    if(l + r - 1 == MIN || u + d - 1 == MIN)
+        return true;
+    temp = arr[i2][j2];
+    for(int k = i2; k < N ; k++){
+        if(arr[k][j2] == temp)
+            res++;
+        else
+            break;
+        if(res == MIN)
             return true;
     }
-    else if(i2 + 1 < N && i2 - 1 > -1 && arr[i2][j2] == arr[i2-1][j2] && arr[i2-1][j2] == arr[i2+1][j2]){
+    d = res;
+    res = 0;
+    for(int k = j2; k < N ; k++){
+        if(arr[i2][k] == temp)
+            res++;
+        else
+            break;
+        if(res == MIN)
             return true;
     }
-    else if(j + 2 < N && arr[i][j] == arr[i][j+1] && arr[i][j+1]== arr[i][j+2]){
+    r = res;
+    res = 0;
+    for(int k = i2; k >= 0 ; k--){
+        if(arr[k][j2] == temp)
+            res++;
+        else
+            break;
+        if(res == MIN)
             return true;
     }
-    else if(j2 + 2< N && arr[i2][j2] == arr[i2][j2+1] && arr[i2][j2+1] == arr[i2][j2+2]){
+    u = res;
+    res = 0;
+    for(int k = j2; k >= 0 ; k--){
+        if(arr[i2][k] == temp)
+            res++;
+        else
+            break;
+        if(res == MIN)
             return true;
     }
-    else if(j - 2 > -1 && arr[i][j] == arr[i][j-1] && arr[i][j-1] == arr[i][j-2]){
-            return true;
-    }
-    else if(j2 - 2 > -1 && arr[i2][j2] == arr[i2][j2 - 1] && arr[i2][j2 - 1]  == arr[i2][j2 - 2]){
-            return true;
-    }
-    else if(j2 - 1 > -1 && j2 + 1 < N && arr[i2][j2] == arr[i2][j2+1] && arr[i2][j2+1] == arr[i2][j2-1]){
-            return true;
-    }
-    else if(j - 1 > -1 && j + 1 < N && arr[i][j] == arr[i][j-1] && arr[i][j-1] == arr[i][j+1]){
-            return true;
-    }
-    else{
-        swap(i,j,i2,j2);
-        return false;
-    }
+    l = res;
+    res = 0;
+    if(l + r - 1 == MIN || u + d - 1 == MIN)
+        return true;
+    swap(i,j,i2,j2);
+    return false;
 }
 
 
@@ -305,6 +355,8 @@ bool check_valid_input(int i,int j,int k,int m)
     int test1 = abs(k-i);
     int test2 = abs(m-j);
 
+    if(i >= N || j >= N || i < -1 || j < -1 || k >= N || m >= N || k < -1 || m < -1)
+        return false;
     if (i==k && j == m )
         return false;
     else if (test1 != 1  &&  test2 != 1 )
@@ -343,7 +395,7 @@ void play_game(){
             random_grid_second();
             print_grid();
         }
-        cout<<" Your Score:"<<score<<endl;
+        cout<<"Your Score:"<<score<<endl;
     }
 
 
